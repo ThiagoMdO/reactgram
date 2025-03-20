@@ -7,6 +7,8 @@ const jwtSecret = process.env.JWT_SECRET;
 
 const { default: mongoose } = require("mongoose");
 
+const { body } = require("express-validator");
+
 
 // Generate user token
 const generateToken = (id) => {
@@ -22,8 +24,7 @@ const register = async(req, res) => {
     const user = await User.findOne({email})
 
     if (user) {
-        res.status(409).json({erros: ["Email já em uso, utilize outro"]})
-        return
+        return res.status(409).json({errors: ["Email já em uso, utilize outro"]})
     }
 
     // Generate password encrypted
@@ -59,13 +60,13 @@ const login = async(req, res) => {
 
     // Check if user exists
     if (!user){
-        res.status(404).json({erros: ["Usuário não encontrado"]})
+        res.status(404).json({errors: ["Usuário não encontrado"]})
         return
     }
 
     // Check if password matches
     if (!(await bcrypt.compare(password, user.password))) {
-        res.status(400).json({erros: ["Senha incorreta"]})
+        res.status(400).json({errors: ["Senha incorreta"]})
         return
     }
 
@@ -91,7 +92,7 @@ const update = async(req, res) => {
     let profileImage = null;
 
     if (req.file) {
-        profileImage = req.filename
+        profileImage = req.file.filename
     }
 
     const reqUser = req.user;
@@ -124,8 +125,8 @@ const getUserById = async(req, res) => {
         const user = await User.findById( new mongoose.Types.ObjectId(id)).select("-password")
         res.status(200).json(user);
     } catch (error) {
-        res.status(404).json({erros: ["Usuário não encontrado"]})
-    } 
+        res.status(404).json({errors: ["Usuário não encontrado"]})
+    }
 }
 
 module.exports = {register,

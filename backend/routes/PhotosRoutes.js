@@ -41,6 +41,7 @@ router.get("/"
 )
 router.get("/search", authGuard, searchPhotosByTitle)
 router.get("/user/:id",
+    authGuard,
     getUserPhotos
 )
 router.get("/:id",
@@ -56,7 +57,7 @@ router.put("/like/:id",
     authGuard,
     likePhoto
 )
-router.put("/:id/comment",
+router.put("/comment/:id",
     authGuard,
     commentInsertIntoPhotoValidation(),
     validate,
